@@ -2,7 +2,7 @@ from PIL import Image
 import sys
 
 if len(sys.argv) == 1:
-    print("Usage: gb-image-to-bytes.py filename")
+    print("Usage: python gb-image-to-bytes.py filename")
     exit()
 
 try:
