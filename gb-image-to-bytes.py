@@ -1,5 +1,12 @@
 from PIL import Image
+import numpy as np
 import sys
+
+
+def get_palette(arr):
+    arr = np.array(arr)
+    return np.unique(arr)
+
 
 if len(sys.argv) == 1:
     print("Usage: python gb-image-to-bytes.py filename")
@@ -21,17 +28,28 @@ if (width % 8 != 0 or height % 8 != 0):
     print("Image dimensions should be multiple of 8")
     exit()
 
-result_array = [[0]*width for i in range(height)]
+values_array = [[0]*width for i in range(height)]
 
 for y in range(0, width):
     for x in range(0, height):
+        values_array[x][y] = photo.getpixel((y, x))
 
-        color = photo.getpixel((y, x))
-        if (color == 0):
+result_array = [[0]*width for i in range(height)]
+
+color_palette = get_palette(values_array)
+if len(color_palette) > 4:
+    # Error
+    print("More than 4 colors detected")
+    exit()
+
+for y in range(0, width):
+    for x in range(0, height):
+        color = values_array[x][y]
+        if (color == color_palette[0]):
             result_array[x][y] = 3
-        elif (0 < color < 83):
+        elif (color_palette[0] < color < color_palette[1]):
             result_array[x][y] = 2
-        elif (82 < color < 149):
+        elif (color_palette[1] <= color < color_palette[2]):
             result_array[x][y] = 1
         else:
             result_array[x][y] = 0
